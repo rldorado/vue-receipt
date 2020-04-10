@@ -9,6 +9,8 @@
   },
   "dependencies": {
     "core-js": "^3.6.4",
+    "jspdf": "^1.5.3",
+    "jspdf-autotable": "^3.3.2",
     "register-service-worker": "^1.7.1",
     "vue": "^2.6.11"
   },
