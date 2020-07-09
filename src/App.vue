@@ -2,7 +2,7 @@
   <div id="app" class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
     <header class="mdl-layout__header">
       <div class="mdl-layout__header-row">
-        <span class="mdl-layout-title">Create PDF receipts with Vue</span>
+        <span class="mdl-layout-title">Create PDF receipts</span>
         <div class="mdl-layout-spacer"></div>
         <nav class="mdl-navigation mdl-layout--large-screen-only">
           <a class="mdl-navigation__link" @click="exportPDF" href="">Export PDF</a>
@@ -20,8 +20,8 @@
     <main class="mdl-layout__content">
       <FormInput :receipt="receipt" :filename="filename" />
       <button 
-        class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" 
-        @click="exportPDF" :disabled="filename === ''">
+        class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" 
+        @click="exportPDF">
         Export PDF
       </button>
       <a class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" 

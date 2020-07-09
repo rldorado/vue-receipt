@@ -25,26 +25,31 @@
                 </div>
             </div>
             <div>
-                <label for="concepts">Concepts</label>
-                <div v-for="(concept, index) in receipt.concepts" :key="index">
-                    <input 
-                        type="text" 
-                        class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label" 
-                        v-model="concept.name">
-                    <input 
-                        type="number" 
-                        class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label" 
-                        pattern="-?[0-9]*(\.[0-9]+)?"
-                        v-model="concept.amount"> €
-                    <button 
-                        class="mdl-button mdl-js-button" 
-                        @click="deleteConcept(index)">
-                        -
-                    </button>
-                    <span class="mdl-textfield__error">Amount is not a number!</span>
-                </div>
+                <label>Concepts</label>
+                <ul class="demo-list-control mdl-list">
+                    <li class="mdl-list-item" v-for="(concept, index) in receipt.concepts" :key="index">
+                        <span class="mdl-list__item-primary-content">
+                            <input 
+                                type="text" 
+                                class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label" 
+                                v-model="concept.name">
+                            <input 
+                                type="number" 
+                                class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label" 
+                                pattern="-?[0-9]*(\.[0-9]+)?"
+                                v-model="concept.amount"> €
+                        </span>
+                        <span class="mdl-list__item-secondary-action">
+                            <button 
+                                class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored" 
+                                @click="deleteConcept(index)">
+                                -
+                            </button>
+                        </span>
+                    </li>
+                </ul>
                 <button 
-                    class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab" 
+                    class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" 
                     @click="addConcept">
                     +
                 </button>
@@ -95,3 +100,6 @@ export default {
 }
 </script>
 
+<style scoped>
+
+</style>
