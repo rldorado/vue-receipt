@@ -5,7 +5,8 @@
         <span class="mdl-layout-title">Create PDF receipts with Vue</span>
         <div class="mdl-layout-spacer"></div>
         <nav class="mdl-navigation mdl-layout--large-screen-only">
-          <a class="mdl-navigation__link" @click="exportPDF">Export PDF</a>
+          <a class="mdl-navigation__link" @click="exportPDF" href="">Export PDF</a>
+          <a class="mdl-navigation__link" :href="getJSONDataFile" download="data.json">Download Data</a>
         </nav>
       </div>
     </header>
@@ -13,15 +14,20 @@
       <span class="mdl-layout-title">Menu</span>
       <nav class="mdl-navigation">
         <a class="mdl-navigation__link" @click="exportPDF">Export PDF</a>
+        <a class="mdl-navigation__link" :href="getJSONDataFile" download="data.json">Download Data</a>
       </nav>
     </div>
     <main class="mdl-layout__content">
       <FormInput :receipt="receipt" :filename="filename" />
       <button 
         class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" 
-        @click="exportPDF">
+        @click="exportPDF" :disabled="filename === ''">
         Export PDF
       </button>
+      <a class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" 
+        :href="getJSONDataFile" download="data.json">
+        Download Data
+      </a>
     </main>
   </div>
 </template>
@@ -34,6 +40,11 @@ import FormInput from '@/components/FormInput'
 export default {
   name: 'App',
   components: { FormInput },
+  computed: {
+    getJSONDataFile () {
+      return 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(this.receipt));
+    }
+  },
   data: () => ({
       filename: '',
       receipt: {
@@ -48,7 +59,7 @@ export default {
         collector: ''
       }
   }),
-  mounted() {
+  created () {
     if (localStorage.getItem('receiptMetadata')) {
       try {
         this.receipt = JSON.parse(localStorage.getItem('receiptMetadata'));
@@ -60,6 +71,16 @@ export default {
   methods: {
     exportPDF() {
       let doc = new jsPDF('landscape', 'pt');
+      this.generatePDF(doc);
+      this.saveReceipt();
+      doc.save(`${this.filename}.pdf`);
+    },
+    saveReceipt() {
+      if (!this.receipt) return;
+      const parsed = JSON.stringify(this.receipt);
+      localStorage.setItem('receiptMetadata', parsed);
+    },
+    generatePDF (doc) {
       this.receipt.amount = this.receipt.concepts.reduce((total,item) => total + Number(item.amount, 2), 0);
       doc.text(40, 40, 'Factura de alquiler');
       const firstRow = ['Numero', 'Localidad', 'Importe'];
@@ -74,10 +95,19 @@ export default {
           body: [[`${this.receipt.date}`, `${this.receipt.expiration}`]]
       });
 
-      const concepts = this.receipt.concepts;
+      let concepts = this.receipt.concepts;
+      const total = concepts.reduce((total,item) => total + Number(item.amount, 2), 0);
+      const conceptBody = [
+        ...concepts.map(el => [el.name, el.amount + ' €']), 
+        [
+          { content: 'TOTAL', styles: { fillColor: [55, 275, 255] } }, 
+          { content: `${total} €`, styles: { fillColor: [55, 275, 255] } }
+        ]
+        //['TOTAL', `${total} €`, { fillColor: [239, 154, 154] }]
+      ];
 
       doc.autoTable({ 
-        body: concepts,
+        body: conceptBody,
         columns: [{ header: 'Concepto', dataKey: 'name' }, { header: 'Importe', dataKey: 'amount' }]
       });
 
@@ -85,14 +115,7 @@ export default {
       doc.autoTable({
           head: [['Pagador', 'Cobrador']],
           body: [[`${this.receipt.payer}`,`${this.receipt.collector}`]]
-      })
-      this.saveReceipt();
-      doc.save(`${this.filename}.pdf`);
-    },
-    saveReceipt() {
-      if (!this.receipt) return;
-      const parsed = JSON.stringify(this.receipt);
-      localStorage.setItem('receiptMetadata', parsed);
+      });
     }
   }
 }

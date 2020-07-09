@@ -1,14 +1,5 @@
 <template>
         <section>
-            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                <input 
-                    class="mdl-textfield__input"
-                    type="text" 
-                    id="filename" 
-                    placeholder="Write here ..." 
-                    v-model="filename">
-                    <label class="mdl-textfield__label" for="filename">Filename</label>
-            </div>
             <div>
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                     <label class="mdl-textfield__label" for="num">Number of receipt</label>
@@ -36,9 +27,21 @@
             <div>
                 <label for="concepts">Concepts</label>
                 <div v-for="(concept, index) in receipt.concepts" :key="index">
-                <input type="text" v-model="concept.name">
-                <input type="number" v-model="concept.amount"> €
-                <button @click="deleteConcept(index)">-</button>
+                    <input 
+                        type="text" 
+                        class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label" 
+                        v-model="concept.name">
+                    <input 
+                        type="number" 
+                        class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label" 
+                        pattern="-?[0-9]*(\.[0-9]+)?"
+                        v-model="concept.amount"> €
+                    <button 
+                        class="mdl-button mdl-js-button" 
+                        @click="deleteConcept(index)">
+                        -
+                    </button>
+                    <span class="mdl-textfield__error">Amount is not a number!</span>
                 </div>
                 <button 
                     class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab" 
@@ -57,12 +60,22 @@
             <div>
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                     <label class="mdl-textfield__label" for="payer">Payer</label>
-                    <textarea class="mdl-textfield__input" id="payer" v-model="receipt.payer"></textarea>
+                    <textarea class="mdl-textfield__input" rows="5" cols="50" id="payer" v-model="receipt.payer"></textarea>
                 </div>
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                     <label class="mdl-textfield__label" for="collector">Collector</label>
-                    <textarea class="mdl-textfield__input" id="collector" v-model="receipt.collector"></textarea>
+                    <textarea class="mdl-textfield__input" rows="5" cols="50" id="collector" v-model="receipt.collector"></textarea>
                 </div>
+            </div>
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                <input 
+                    class="mdl-textfield__input"
+                    type="text" 
+                    id="filename" 
+                    placeholder="Write here ..." 
+                    :value="filename"
+                    v-on:input="$emit('filename', $event.target.value)">
+                    <label class="mdl-textfield__label" for="filename">Filename</label>
             </div>
         </section>
 </template>
