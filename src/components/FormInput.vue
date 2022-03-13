@@ -1,87 +1,76 @@
 <template>
         <section>
             <div>
-                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <label class="mdl-textfield__label" for="num">Number of receipt</label>
-                    <input class="mdl-textfield__input" type="text" id="num" v-model="receipt.num">
-                </div>
-                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <label class="mdl-textfield__label" for="location">Location</label>
-                    <input class="mdl-textfield__input" type="text" id="location" v-model="receipt.loc">
-                </div>
-                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <label class="mdl-textfield__label" for="amount">Amount</label>
-                    <input class="mdl-textfield__input" type="text" id="amount" :value="conceptTotal + '€'" disabled>
-                </div>
+                <md-field>
+                    <md-icon>label_important</md-icon>
+                    <label>{{ $t('receipt.number') }}</label>
+                    <md-input v-model="receipt.num" />
+                </md-field>
+                <md-field>
+                    <md-icon>place</md-icon>
+                    <label>{{ $t('receipt.location') }}</label>
+                    <md-input v-model="receipt.loc" />
+                </md-field>
+                <md-field>
+                    <md-icon>euro_symbol</md-icon>
+                    <label>{{ $t('receipt.total') }}</label>
+                    <md-input :value="conceptTotal + '€'" disabled />
+                </md-field>
             </div>
             <div>
-                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <label class="mdl-textfield__label" for="date">Emission date</label>
-                    <input class="mdl-textfield__input" type="date" id="date" v-model="receipt.date">
-                </div>
-                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <label class="mdl-textfield__label" for="exp">Expiration date</label>
-                    <input class="mdl-textfield__input" type="text" id="exp" v-model="receipt.expiration">
-                </div>
+                <md-datepicker v-model="receipt.date" md-immediately>
+                    <label>{{ $t('receipt.emission') }}</label>
+                </md-datepicker>
+                <md-field>
+                    <md-icon>event</md-icon>
+                    <label>{{ $t('receipt.expiration') }}</label>
+                    <md-input v-model="receipt.expiration" />
+                </md-field>
             </div>
             <div>
-                <label>Concepts</label>
-                <ul class="demo-list-control mdl-list">
-                    <li class="mdl-list-item" v-for="(concept, index) in receipt.concepts" :key="index">
-                        <span class="mdl-list__item-primary-content">
-                            <input 
-                                type="text" 
-                                class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label" 
-                                v-model="concept.name">
-                            <input 
+                <md-list>
+                    <md-subheader>{{ $t('receipt.concepts') }}</md-subheader>
+                    <md-list-item v-for="(concept, index) in receipt.concepts" :key="index">
+                        <div class="md-list-item-text">
+                            <md-input
+                                v-model="concept.name" 
+                                :placeholder="`${$t('receipt.concept')}...`" />
+                            <md-input 
                                 type="number" 
-                                class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label" 
-                                pattern="-?[0-9]*(\.[0-9]+)?"
-                                v-model="concept.amount"> €
-                        </span>
-                        <span class="mdl-list__item-secondary-action">
-                            <button 
-                                class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored" 
-                                @click="deleteConcept(index)">
-                                -
-                            </button>
-                        </span>
-                    </li>
-                </ul>
-                <button 
-                    class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" 
-                    @click="addConcept">
-                    +
-                </button>
+                                v-model="concept.amount"
+                                :placeholder="`${$t('receipt.amount')}...`">
+                                 €
+                            </md-input>
+                        </div>
+                        <md-button class="md-fab md-mini md-icon-button md-list-action" @click="deleteConcept(index)">
+                            <md-icon>remove</md-icon>
+                        </md-button>
+                    </md-list-item>
+                </md-list>
             </div>
-            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                <label class="mdl-textfield__label" for="home">Address:</label>
-                <input 
-                    class="mdl-textfield__input" 
-                    type="text" id="home" 
-                    placeholder="Write here ..."
-                    v-model="receipt.home">
-            </div>
+            <md-button class="md-raised" @click="addConcept">
+                {{ $t('receipt.add') }} <md-icon>add</md-icon>
+            </md-button>
+            <md-field>
+                <md-icon>home</md-icon>
+                <label>{{ $t('receipt.address') }}</label>
+                <md-input v-model="receipt.home" />
+            </md-field>
             <div>
-                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <label class="mdl-textfield__label" for="payer">Payer</label>
-                    <textarea class="mdl-textfield__input" rows="5" cols="50" id="payer" v-model="receipt.payer"></textarea>
-                </div>
-                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <label class="mdl-textfield__label" for="collector">Collector</label>
-                    <textarea class="mdl-textfield__input" rows="5" cols="50" id="collector" v-model="receipt.collector"></textarea>
-                </div>
+                <md-field>
+                    <label>{{ $t('receipt.payer') }}</label>
+                    <md-textarea rows="5" cols="50" v-model="receipt.payer" />
+                </md-field>
+                <md-field>
+                    <label>{{ $t('receipt.collector') }}</label>
+                    <md-textarea rows="5" cols="50" v-model="receipt.collector" />
+                </md-field>
             </div>
-            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                <input 
-                    class="mdl-textfield__input"
-                    type="text" 
-                    id="filename" 
-                    placeholder="Write here ..." 
-                    :value="filename"
-                    v-on:input="$emit('filename', $event.target.value)">
-                    <label class="mdl-textfield__label" for="filename">Filename</label>
-            </div>
+            <md-field>
+                <md-icon>drive_file_rename_outline</md-icon>
+                <label>{{ $t('receipt.filename') }}</label>
+                <md-input v-model="receipt.filename" />
+            </md-field>
         </section>
 </template>
 
@@ -99,7 +88,3 @@ export default {
     }
 }
 </script>
-
-<style scoped>
-
-</style>

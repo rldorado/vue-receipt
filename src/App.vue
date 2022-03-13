@@ -1,34 +1,35 @@
 <template>
-  <div id="app" class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
-    <header class="mdl-layout__header">
-      <div class="mdl-layout__header-row">
-        <span class="mdl-layout-title">Create PDF receipts</span>
-        <div class="mdl-layout-spacer"></div>
-        <nav class="mdl-navigation mdl-layout--large-screen-only">
-          <a class="mdl-navigation__link" @click="exportPDF" href="">Export PDF</a>
-          <a class="mdl-navigation__link" :href="getJSONDataFile" download="data.json">Download Data</a>
-        </nav>
-      </div>
-    </header>
-    <div class="mdl-layout__drawer">
-      <span class="mdl-layout-title">Menu</span>
-      <nav class="mdl-navigation">
-        <a class="mdl-navigation__link" @click="exportPDF">Export PDF</a>
-        <a class="mdl-navigation__link" :href="getJSONDataFile" download="data.json">Download Data</a>
-      </nav>
-    </div>
-    <main class="mdl-layout__content">
-      <FormInput :receipt="receipt" :filename="filename" />
-      <button 
-        class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" 
-        @click="exportPDF">
-        Export PDF
-      </button>
-      <a class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" 
-        :href="getJSONDataFile" download="data.json">
-        Download Data
-      </a>
-    </main>
+  <div id="app" class="md-layout md-js-layout md-layout--fixed-header">
+    <md-app md-mode="reveal">
+      <md-app-toolbar class="md-primary">
+        <span class="md-title">
+          <md-icon>receipt</md-icon>
+            {{ $t('title') }}
+          <md-icon>receipt</md-icon>
+        </span>        
+      </md-app-toolbar>
+
+      <md-app-content>
+        <form>
+          <form-input :receipt="receipt" :filename="filename" />
+          <div>
+            <md-button
+              type="submit"
+              class="md-primary md-raised md-dense"
+              @click="exportPDF">
+              <md-icon>picture_as_pdf</md-icon> {{ $t('export') }}
+            </md-button>
+            <md-button
+              type="submit"
+              class="md-secondary md-raised md-dense"
+              :href="getJSONDataFile"
+              download="data.json">
+              <md-icon>download</md-icon> {{ $t('download') }}
+            </md-button>
+          </div>
+        </form>
+      </md-app-content>
+    </md-app>
   </div>
 </template>
 
@@ -45,12 +46,13 @@ export default {
       return 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(this.receipt));
     }
   },
-  data: () => ({
+  data: () => {
+    return {
       filename: '',
       receipt: {
         num: '04/2020',
         loc: '',
-        amount: 0,
+        amount: undefined,
         date: undefined,
         expiration: undefined,
         home: '',
@@ -58,7 +60,8 @@ export default {
         payer: '',
         collector: ''
       }
-  }),
+    }
+  },
   created () {
     if (localStorage.getItem('receiptMetadata')) {
       try {
@@ -67,6 +70,7 @@ export default {
         localStorage.removeItem('receiptMetadata');
       }
     }
+    this.$material.locale.dateFormat = 'dd/MM/yyyy';
   },
   methods: {
     exportPDF() {
@@ -82,17 +86,33 @@ export default {
     },
     generatePDF (doc) {
       this.receipt.amount = this.receipt.concepts.reduce((total,item) => total + Number(item.amount, 2), 0);
-      doc.text(40, 40, 'Factura de alquiler');
-      const firstRow = ['Numero', 'Localidad', 'Importe'];
+      doc.text(40, 40, this.$t('pdf.title'));
+      const firstRowHeader = [
+        this.$t('receipt.number'),
+        this.$t('receipt.location'),
+        this.$t('receipt.total')
+      ];
+      const firstRowBody = [
+        `${this.receipt.num}`,
+        `${this.receipt.loc}`,
+        `${this.receipt.amount} €`
+      ]
       doc.autoTable({
-        head: [firstRow],
-        body: [[`${this.receipt.num}`, `${this.receipt.loc}`, `${this.receipt.amount} €`]],
+        head: [firstRowHeader],
+        body: [firstRowBody],
         margin: { top: 60 }
       });
-      const secondRow = ['Fecha','Vencimiento'];
+      const secondRowHeader = [
+        this.$t('receipt.emission'),
+        this.$t('receipt.expiration')
+      ];
+      const secondRowBody = [
+        `${this.receipt.date}`,
+        `${this.receipt.expiration}`
+      ]
       doc.autoTable({
-          head: [secondRow],
-          body: [[`${this.receipt.date}`, `${this.receipt.expiration}`]]
+          head: [secondRowHeader],
+          body: [secondRowBody]
       });
 
       let concepts = this.receipt.concepts;
@@ -100,41 +120,25 @@ export default {
       const conceptBody = [
         ...concepts.map(el => [el.name, el.amount + ' €']), 
         [
-          { content: 'TOTAL', styles: { fillColor: [55, 275, 255] } }, 
-          { content: `${total} €`, styles: { fillColor: [55, 275, 255] } }
+          { content: `${this.$t('pdf.total')}`, styles: { fillColor: [239, 154, 154] } }, 
+          { content: `${total} €`, styles: { fillColor: [239, 154, 154] } }
         ]
-        //['TOTAL', `${total} €`, { fillColor: [239, 154, 154] }]
       ];
 
       doc.autoTable({ 
         body: conceptBody,
-        columns: [{ header: 'Concepto', dataKey: 'name' }, { header: 'Importe', dataKey: 'amount' }]
+        columns: [
+          { header: this.$t('receipt.concept'), dataKey: 'name' },
+          { header: this.$t('receipt.amount'), dataKey: 'amount' }
+        ]
       });
 
-      doc.autoTable({ head: [['Domicilio']], body: [[`${this.receipt.home}`]] })
+      doc.autoTable({ head: [[this.$t('receipt.address')]], body: [[`${this.receipt.home}`]] })
       doc.autoTable({
-          head: [['Pagador', 'Cobrador']],
+          head: [[this.$t('receipt.payer'), this.$t('receipt.collector')]],
           body: [[`${this.receipt.payer}`,`${this.receipt.collector}`]]
       });
     }
   }
 }
 </script>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  color: #2c3e50;
-}
-
-main {
-  text-align: left;
-  padding: 2rem
-}
-
-a[title="Hosted on free web hosting 000webhost.com. Host your own website for FREE."] {
-  display: none;
-}
-</style>

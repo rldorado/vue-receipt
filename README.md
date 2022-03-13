@@ -1,6 +1,8 @@
-# Vue Receipt
+# Vue Receipt Generator
 
-Small webapp made for generate simple receipts. It makes use of `jspdf` & `jspdf-autotable` to generate final PDFs.
+Webapp made for generate simple receipts using `jspdf` & `jspdf-autotable` to generate final PDFs.
+
+It has also some translations (`en`, `es`). If you want to add more, please don't hesistate on propose PR.
 
 ## Project setup
 ```
