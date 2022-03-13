@@ -6,14 +6,20 @@
   "receipt": {
     "number": "Número del recibo",
     "location": "Lugar",
-    "total": "Cantidad total",
+    "total": "Importe total",
     "emission": "Fecha de emisión",
     "expiration": "Fecha de expiración",
     "concepts": "Conceptos",
+    "concept": "Concepto",
+    "amount": "Importe",
     "add": "Añadir un nuevo concepto",
-    "address": "Dirección",
-    "payer": "Información del pagador",
-    "collector": "Información del recaudador",
+    "address": "Domicilio",
+    "payer": "Pagador",
+    "collector": "Cobrador",
     "filename": "Nombre del fichero"
+  },
+  "pdf": {
+    "title": "Factura del alquiler",
+    "total": "TOTAL"
   }
 }

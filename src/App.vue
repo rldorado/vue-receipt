@@ -2,9 +2,6 @@
   <div id="app" class="md-layout md-js-layout md-layout--fixed-header">
     <md-app md-mode="reveal">
       <md-app-toolbar class="md-primary">
-        <md-button class="md-icon-button" @click="menuVisible = !menuVisible">
-          <md-icon>menu</md-icon>
-        </md-button>
         <span class="md-title">
           <md-icon>receipt</md-icon>
             {{ $t('title') }}
@@ -12,37 +9,25 @@
         </span>        
       </md-app-toolbar>
 
-      <md-app-drawer :md-active.sync="menuVisible">
-        <md-toolbar class="md-transparent" md-elevation="0">
-          {{ $t('menu') }}
-        </md-toolbar>
-
-        <md-list>
-          <md-list-item>
-            <md-icon>picture_as_pdf</md-icon>
-            <a @click="exportPDF" href="" class="md-list-item-text">{{ $t('export') }}</a>
-          </md-list-item>
-
-          <md-list-item>
-            <md-icon>download</md-icon>
-            <span 
-              :href="getJSONDataFile"
-              download="data.json"
-              class="md-list-item-text">
-              {{ $t('download') }}
-            </span>
-          </md-list-item>
-        </md-list>
-      </md-app-drawer>
-
       <md-app-content>
-        <FormInput :receipt="receipt" :filename="filename" />
-        <md-button class="md-primary md-raised" @click="exportPDF">
-          <md-icon>picture_as_pdf</md-icon> {{ $t('export') }}
-        </md-button>
-        <md-button class="md-secondary md-raised" :href="getJSONDataFile" download="data.json">
-          <md-icon>download</md-icon> {{ $t('download') }}
-        </md-button>
+        <form>
+          <form-input :receipt="receipt" :filename="filename" />
+          <div>
+            <md-button
+              type="submit"
+              class="md-primary md-raised md-dense"
+              @click="exportPDF">
+              <md-icon>picture_as_pdf</md-icon> {{ $t('export') }}
+            </md-button>
+            <md-button
+              type="submit"
+              class="md-secondary md-raised md-dense"
+              :href="getJSONDataFile"
+              download="data.json">
+              <md-icon>download</md-icon> {{ $t('download') }}
+            </md-button>
+          </div>
+        </form>
       </md-app-content>
     </md-app>
   </div>
@@ -61,13 +46,13 @@ export default {
       return 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(this.receipt));
     }
   },
-  data: () => ({
-      menuVisible: false,
+  data: () => {
+    return {
       filename: '',
       receipt: {
         num: '04/2020',
         loc: '',
-        amount: 0,
+        amount: undefined,
         date: undefined,
         expiration: undefined,
         home: '',
@@ -75,7 +60,8 @@ export default {
         payer: '',
         collector: ''
       }
-  }),
+    }
+  },
   created () {
     if (localStorage.getItem('receiptMetadata')) {
       try {
@@ -84,6 +70,7 @@ export default {
         localStorage.removeItem('receiptMetadata');
       }
     }
+    this.$material.locale.dateFormat = 'dd/MM/yyyy';
   },
   methods: {
     exportPDF() {
@@ -99,17 +86,33 @@ export default {
     },
     generatePDF (doc) {
       this.receipt.amount = this.receipt.concepts.reduce((total,item) => total + Number(item.amount, 2), 0);
-      doc.text(40, 40, 'Factura de alquiler');
-      const firstRow = ['Numero', 'Localidad', 'Importe'];
+      doc.text(40, 40, this.$t('pdf.title'));
+      const firstRowHeader = [
+        this.$t('receipt.number'),
+        this.$t('receipt.location'),
+        this.$t('receipt.total')
+      ];
+      const firstRowBody = [
+        `${this.receipt.num}`,
+        `${this.receipt.loc}`,
+        `${this.receipt.amount} €`
+      ]
       doc.autoTable({
-        head: [firstRow],
-        body: [[`${this.receipt.num}`, `${this.receipt.loc}`, `${this.receipt.amount} €`]],
+        head: [firstRowHeader],
+        body: [firstRowBody],
         margin: { top: 60 }
       });
-      const secondRow = ['Fecha','Vencimiento'];
+      const secondRowHeader = [
+        this.$t('receipt.emission'),
+        this.$t('receipt.expiration')
+      ];
+      const secondRowBody = [
+        `${this.receipt.date}`,
+        `${this.receipt.expiration}`
+      ]
       doc.autoTable({
-          head: [secondRow],
-          body: [[`${this.receipt.date}`, `${this.receipt.expiration}`]]
+          head: [secondRowHeader],
+          body: [secondRowBody]
       });
 
       let concepts = this.receipt.concepts;
@@ -117,20 +120,22 @@ export default {
       const conceptBody = [
         ...concepts.map(el => [el.name, el.amount + ' €']), 
         [
-          { content: 'TOTAL', styles: { fillColor: [55, 275, 255] } }, 
-          { content: `${total} €`, styles: { fillColor: [55, 275, 255] } }
+          { content: `${this.$t('pdf.total')}`, styles: { fillColor: [239, 154, 154] } }, 
+          { content: `${total} €`, styles: { fillColor: [239, 154, 154] } }
         ]
-        //['TOTAL', `${total} €`, { fillColor: [239, 154, 154] }]
       ];
 
       doc.autoTable({ 
         body: conceptBody,
-        columns: [{ header: 'Concepto', dataKey: 'name' }, { header: 'Importe', dataKey: 'amount' }]
+        columns: [
+          { header: this.$t('receipt.concept'), dataKey: 'name' },
+          { header: this.$t('receipt.amount'), dataKey: 'amount' }
+        ]
       });
 
-      doc.autoTable({ head: [['Domicilio']], body: [[`${this.receipt.home}`]] })
+      doc.autoTable({ head: [[this.$t('receipt.address')]], body: [[`${this.receipt.home}`]] })
       doc.autoTable({
-          head: [['Pagador', 'Cobrador']],
+          head: [[this.$t('receipt.payer'), this.$t('receipt.collector')]],
           body: [[`${this.receipt.payer}`,`${this.receipt.collector}`]]
       });
     }

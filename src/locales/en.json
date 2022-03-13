@@ -10,10 +10,16 @@
     "emission": "Emission date",
     "expiration": "Expiration date",
     "concepts": "Concepts",
+    "concept": "Concept",
+    "amount": "Amount",
     "add": "Add new concept",
     "address": "Address",
     "payer": "Payer",
     "collector": "Collector",
     "filename": "Filename"
+  },
+  "pdf": {
+    "title": "Receipt bill",
+    "total": "TOTAL"
   }
 }

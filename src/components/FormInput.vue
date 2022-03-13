@@ -18,7 +18,7 @@
                 </md-field>
             </div>
             <div>
-                <md-datepicker v-model="receipt.date">
+                <md-datepicker v-model="receipt.date" md-immediately>
                     <label>{{ $t('receipt.emission') }}</label>
                 </md-datepicker>
                 <md-field>
@@ -32,18 +32,25 @@
                     <md-subheader>{{ $t('receipt.concepts') }}</md-subheader>
                     <md-list-item v-for="(concept, index) in receipt.concepts" :key="index">
                         <div class="md-list-item-text">
-                            <md-input v-model="concept.name" />
-                            <md-input pattern="-?[0-9]*(\.[0-9]+)?" v-model="concept.amount"> €</md-input>
+                            <md-input
+                                v-model="concept.name" 
+                                :placeholder="`${$t('receipt.concept')}...`" />
+                            <md-input 
+                                type="number" 
+                                v-model="concept.amount"
+                                :placeholder="`${$t('receipt.amount')}...`">
+                                 €
+                            </md-input>
                         </div>
                         <md-button class="md-fab md-mini md-icon-button md-list-action" @click="deleteConcept(index)">
                             <md-icon>remove</md-icon>
                         </md-button>
                     </md-list-item>
                 </md-list>
-                <md-button class="md-raised" @click="addConcept">
-                    {{ $t('receipt.add') }} <md-icon>add</md-icon>
-                </md-button>
             </div>
+            <md-button class="md-raised" @click="addConcept">
+                {{ $t('receipt.add') }} <md-icon>add</md-icon>
+            </md-button>
             <md-field>
                 <md-icon>home</md-icon>
                 <label>{{ $t('receipt.address') }}</label>
@@ -62,8 +69,7 @@
             <md-field>
                 <md-icon>drive_file_rename_outline</md-icon>
                 <label>{{ $t('receipt.filename') }}</label>
-                <md-input id="filename" :value="filename"
-                    v-on:input="$emit('filename', $event.target.value)" />
+                <md-input v-model="receipt.filename" />
             </md-field>
         </section>
 </template>
