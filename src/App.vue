@@ -1,34 +1,48 @@
 <template>
-  <div id="app" class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
-    <header class="mdl-layout__header">
-      <div class="mdl-layout__header-row">
-        <span class="mdl-layout-title">Create PDF receipts</span>
-        <div class="mdl-layout-spacer"></div>
-        <nav class="mdl-navigation mdl-layout--large-screen-only">
-          <a class="mdl-navigation__link" @click="exportPDF" href="">Export PDF</a>
-          <a class="mdl-navigation__link" :href="getJSONDataFile" download="data.json">Download Data</a>
-        </nav>
-      </div>
-    </header>
-    <div class="mdl-layout__drawer">
-      <span class="mdl-layout-title">Menu</span>
-      <nav class="mdl-navigation">
-        <a class="mdl-navigation__link" @click="exportPDF">Export PDF</a>
-        <a class="mdl-navigation__link" :href="getJSONDataFile" download="data.json">Download Data</a>
-      </nav>
-    </div>
-    <main class="mdl-layout__content">
-      <FormInput :receipt="receipt" :filename="filename" />
-      <button 
-        class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" 
-        @click="exportPDF">
-        Export PDF
-      </button>
-      <a class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" 
-        :href="getJSONDataFile" download="data.json">
-        Download Data
-      </a>
-    </main>
+  <div id="app" class="md-layout md-js-layout md-layout--fixed-header">
+    <md-app md-mode="reveal">
+      <md-app-toolbar class="md-primary">
+        <md-button class="md-icon-button" @click="menuVisible = !menuVisible">
+          <md-icon>menu</md-icon>
+        </md-button>
+        <span class="md-title">
+          <md-icon>receipt</md-icon>
+            Create PDF Receipts
+          <md-icon>receipt</md-icon>
+        </span>        
+      </md-app-toolbar>
+
+      <md-app-drawer :md-active.sync="menuVisible">
+        <md-toolbar class="md-transparent" md-elevation="0">MENU</md-toolbar>
+
+        <md-list>
+          <md-list-item>
+            <md-icon>move_to_inbox</md-icon>
+            <a @click="exportPDF" href="" class="md-list-item-text">Export PDF</a>
+          </md-list-item>
+
+          <md-list-item>
+            <md-icon>send</md-icon>
+            <span 
+              :href="getJSONDataFile"
+              download="data.json"
+              class="md-list-item-text">
+              Download PDF
+            </span>
+          </md-list-item>
+        </md-list>
+      </md-app-drawer>
+
+      <md-app-content>
+        <FormInput :receipt="receipt" :filename="filename" />
+        <md-button class="md-primary md-raised" @click="exportPDF">
+          <md-icon>update</md-icon> Export PDF
+        </md-button>
+        <md-button class="md-secondary md-raised" :href="getJSONDataFile" download="data.json">
+          <md-icon>download</md-icon> Download Data
+        </md-button>
+      </md-app-content>
+    </md-app>
   </div>
 </template>
 
@@ -46,6 +60,7 @@ export default {
     }
   },
   data: () => ({
+      menuVisible: false,
       filename: '',
       receipt: {
         num: '04/2020',
@@ -120,21 +135,3 @@ export default {
   }
 }
 </script>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  color: #2c3e50;
-}
-
-main {
-  text-align: left;
-  padding: 2rem
-}
-
-a[title="Hosted on free web hosting 000webhost.com. Host your own website for FREE."] {
-  display: none;
-}
-</style>
