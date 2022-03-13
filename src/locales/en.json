@@ -1,0 +1,19 @@
+{
+  "title": "PDF receipt generator",
+  "export": "Export PDF",
+  "download": "Download Data",
+  "menu": "Menu",
+  "receipt": {
+    "number": "Number of receipt",
+    "location": "Location",
+    "total": "Total amount",
+    "emission": "Emission date",
+    "expiration": "Expiration date",
+    "concepts": "Concepts",
+    "add": "Add new concept",
+    "address": "Address",
+    "payer": "Payer",
+    "collector": "Collector",
+    "filename": "Filename"
+  }
+}

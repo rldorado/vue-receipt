@@ -7,27 +7,29 @@
         </md-button>
         <span class="md-title">
           <md-icon>receipt</md-icon>
-            Create PDF Receipts
+            {{ $t('title') }}
           <md-icon>receipt</md-icon>
         </span>        
       </md-app-toolbar>
 
       <md-app-drawer :md-active.sync="menuVisible">
-        <md-toolbar class="md-transparent" md-elevation="0">MENU</md-toolbar>
+        <md-toolbar class="md-transparent" md-elevation="0">
+          {{ $t('menu') }}
+        </md-toolbar>
 
         <md-list>
           <md-list-item>
-            <md-icon>move_to_inbox</md-icon>
-            <a @click="exportPDF" href="" class="md-list-item-text">Export PDF</a>
+            <md-icon>picture_as_pdf</md-icon>
+            <a @click="exportPDF" href="" class="md-list-item-text">{{ $t('export') }}</a>
           </md-list-item>
 
           <md-list-item>
-            <md-icon>send</md-icon>
+            <md-icon>download</md-icon>
             <span 
               :href="getJSONDataFile"
               download="data.json"
               class="md-list-item-text">
-              Download PDF
+              {{ $t('download') }}
             </span>
           </md-list-item>
         </md-list>
@@ -36,10 +38,10 @@
       <md-app-content>
         <FormInput :receipt="receipt" :filename="filename" />
         <md-button class="md-primary md-raised" @click="exportPDF">
-          <md-icon>update</md-icon> Export PDF
+          <md-icon>picture_as_pdf</md-icon> {{ $t('export') }}
         </md-button>
         <md-button class="md-secondary md-raised" :href="getJSONDataFile" download="data.json">
-          <md-icon>download</md-icon> Download Data
+          <md-icon>download</md-icon> {{ $t('download') }}
         </md-button>
       </md-app-content>
     </md-app>

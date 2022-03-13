@@ -1,0 +1,19 @@
+{
+  "title": "Generador de recibos PDF",
+  "export": "Exportar PDF",
+  "download": "Descargar datos",
+  "menu": "Menú",
+  "receipt": {
+    "number": "Número del recibo",
+    "location": "Lugar",
+    "total": "Cantidad total",
+    "emission": "Fecha de emisión",
+    "expiration": "Fecha de expiración",
+    "concepts": "Conceptos",
+    "add": "Añadir un nuevo concepto",
+    "address": "Dirección",
+    "payer": "Información del pagador",
+    "collector": "Información del recaudador",
+    "filename": "Nombre del fichero"
+  }
+}

@@ -3,33 +3,33 @@
             <div>
                 <md-field>
                     <md-icon>label_important</md-icon>
-                    <label>Number of receipt</label>
+                    <label>{{ $t('receipt.number') }}</label>
                     <md-input v-model="receipt.num" />
                 </md-field>
                 <md-field>
                     <md-icon>place</md-icon>
-                    <label>Location</label>
+                    <label>{{ $t('receipt.location') }}</label>
                     <md-input v-model="receipt.loc" />
                 </md-field>
                 <md-field>
                     <md-icon>euro_symbol</md-icon>
-                    <label>Amount</label>
+                    <label>{{ $t('receipt.total') }}</label>
                     <md-input :value="conceptTotal + '€'" disabled />
                 </md-field>
             </div>
             <div>
                 <md-datepicker v-model="receipt.date">
-                    <label>Emission date</label>
+                    <label>{{ $t('receipt.emission') }}</label>
                 </md-datepicker>
                 <md-field>
                     <md-icon>event</md-icon>
-                    <label>Expiration date</label>
+                    <label>{{ $t('receipt.expiration') }}</label>
                     <md-input v-model="receipt.expiration" />
                 </md-field>
             </div>
             <div>
                 <md-list>
-                    <md-subheader>Concepts</md-subheader>
+                    <md-subheader>{{ $t('receipt.concepts') }}</md-subheader>
                     <md-list-item v-for="(concept, index) in receipt.concepts" :key="index">
                         <div class="md-list-item-text">
                             <md-input v-model="concept.name" />
@@ -41,27 +41,27 @@
                     </md-list-item>
                 </md-list>
                 <md-button class="md-raised" @click="addConcept">
-                    <md-icon>add</md-icon>
+                    {{ $t('receipt.add') }} <md-icon>add</md-icon>
                 </md-button>
             </div>
             <md-field>
                 <md-icon>home</md-icon>
-                <label>Address:</label>
+                <label>{{ $t('receipt.address') }}</label>
                 <md-input v-model="receipt.home" />
             </md-field>
             <div>
                 <md-field>
-                    <label>Payer</label>
+                    <label>{{ $t('receipt.payer') }}</label>
                     <md-textarea rows="5" cols="50" v-model="receipt.payer" />
                 </md-field>
                 <md-field>
-                    <label>Collector</label>
+                    <label>{{ $t('receipt.collector') }}</label>
                     <md-textarea rows="5" cols="50" v-model="receipt.collector" />
                 </md-field>
             </div>
             <md-field>
                 <md-icon>drive_file_rename_outline</md-icon>
-                <label>Filename</label>
+                <label>{{ $t('receipt.filename') }}</label>
                 <md-input id="filename" :value="filename"
                     v-on:input="$emit('filename', $event.target.value)" />
             </md-field>
