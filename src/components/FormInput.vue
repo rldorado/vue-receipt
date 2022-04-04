@@ -11,11 +11,6 @@
                     <label>{{ $t('receipt.location') }}</label>
                     <md-input v-model="receipt.loc" />
                 </md-field>
-                <md-field>
-                    <md-icon>euro_symbol</md-icon>
-                    <label>{{ $t('receipt.total') }}</label>
-                    <md-input :value="conceptTotal + '€'" disabled />
-                </md-field>
             </div>
             <div>
                 <md-datepicker v-model="receipt.date" md-immediately>
@@ -52,6 +47,11 @@
                 {{ $t('receipt.add') }} <md-icon>add</md-icon>
             </md-button>
             <md-field>
+                <md-icon>euro_symbol</md-icon>
+                <label>{{ $t('receipt.total') }}</label>
+                <md-input :value="conceptTotal + '€'" disabled />
+            </md-field>
+            <md-field>
                 <md-icon>home</md-icon>
                 <label>{{ $t('receipt.address') }}</label>
                 <md-input v-model="receipt.home" />
@@ -66,11 +66,6 @@
                     <md-textarea rows="5" cols="50" v-model="receipt.collector" />
                 </md-field>
             </div>
-            <md-field>
-                <md-icon>drive_file_rename_outline</md-icon>
-                <label>{{ $t('receipt.filename') }}</label>
-                <md-input v-model="receipt.filename" />
-            </md-field>
         </section>
 </template>
 

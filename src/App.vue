@@ -12,6 +12,11 @@
       <md-app-content>
         <form>
           <form-input :receipt="receipt" :filename="filename" />
+          <md-field>
+            <md-icon>drive_file_rename_outline</md-icon>
+            <label>{{ $t('receipt.filename') }}</label>
+            <md-input v-model="receipt.filename" />
+          </md-field>
           <div>
             <md-button
               type="submit"
@@ -50,7 +55,7 @@ export default {
     return {
       filename: '',
       receipt: {
-        num: '04/2020',
+        num: '04/2022',
         loc: '',
         amount: undefined,
         date: undefined,
